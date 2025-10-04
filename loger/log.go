@@ -12,7 +12,7 @@ import (
 )
 
 /* ----------------------- log session------------------- */
-type logStruct struct {
+type LogStruct struct {
 	lUid      string
 	lInfoFlag bool
 }
@@ -29,8 +29,8 @@ func (pErr *ownErr) Error() string {
 }
 
 /* --------------------Log Ination ---------------- */
-func Init() *logStruct {
-	var lLogRec logStruct
+func Init() *LogStruct {
+	var lLogRec LogStruct
 	lLogRec.lUid = strings.ReplaceAll(uuid.New().String(), "-", "")
 	lLogRec.lInfoFlag = strings.EqualFold(os.Getenv("InfoFlog"), "Y")
 	return &lLogRec
@@ -44,7 +44,7 @@ var (
 )
 
 // ---------- INFO LOGGER ----------
-func (lId *logStruct) Info(pMsg ...any) {
+func (lId *LogStruct) Info(pMsg ...any) {
 	if !lId.lInfoFlag {
 		return
 	}
@@ -53,7 +53,7 @@ func (lId *logStruct) Info(pMsg ...any) {
 }
 
 // ---------- ERROR LOGGER ----------
-func (lId *logStruct) Err(pErr any) {
+func (lId *LogStruct) Err(pErr any) {
 	if lVal, lok := pErr.(error); lok {
 		var lOWerr *ownErr
 		if errors.As(lVal, &lOWerr) {
