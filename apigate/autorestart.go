@@ -54,7 +54,7 @@ func restart() (lErr error) {
 }
 
 /* this function treager in end of the program  like close glogal db connection
-use defer to call this in func main() , this func is also auto treager your code where your program will panic
+use defer to call this in func main() , this func is also auto restart your code where your program will panic
 */
 
 func TreagerOnEnd(pEndFunc ...func()) {
@@ -66,10 +66,10 @@ func TreagerOnEnd(pEndFunc ...func()) {
 
 	if lErr := recover(); lErr != nil {
 		log.Println("Caught panic:", lErr)
-	}
 
-	if lErr := restart(); lErr != nil {
-		log.Println("Error restarting program:", lErr)
+		if lErr := restart(); lErr != nil {
+			log.Println("Error restarting program:", lErr)
+		}
 	}
 
 }
