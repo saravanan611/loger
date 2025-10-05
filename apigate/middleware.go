@@ -53,16 +53,19 @@ var (
 	allowHeader     = []string{"Accept", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization", "credentials"}
 )
 
+/* set the header for your request  */
 func SetHeader(pHeader ...string) {
 	if len(pHeader) > 0 {
 		allowHeader = append(allowHeader, pHeader...)
 	}
 }
 
+/* set the origin for your request ,default "*"" */
 func SetOrigin(pOrigin string) {
 	allowOrigin = pOrigin
 }
 
+/* enable Credential to true for cookie_set,some other browser side operation dun by golang ,default "false" */
 func EnableCredential() {
 	allowCredential = true
 }
@@ -119,6 +122,7 @@ func logMiddleware(pNext http.Handler) http.Handler {
 
 }
 
+/* set up your server to execuate  */
 func SetServer(pRuterFunc func(pRouterInfo *mux.Router), pReadTimeout, pWriteTimeout, pIdleTimeout, pPortAdrs int) error {
 
 	if pPortAdrs < 5000 {

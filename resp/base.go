@@ -2,6 +2,7 @@ package resp
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/saravanan611/loger/loger"
@@ -19,10 +20,12 @@ type RespStruct struct {
 	RespInfo any    `json:"info,omitempty"`
 }
 
+/* standard error responce structure for api */
+
 func ErrorSender(w http.ResponseWriter, pLog *loger.LogStruct, pErrCode string, pErr error) {
-	// w.WriteHeader(http.StatusBadRequest)
 	pLog.Err(pErr)
-	if lErr := json.NewEncoder(w).Encode(RespStruct{Status: Error, ErrCode: pErrCode, Msg: pErr.Error()}); lErr != nil {
+	w.WriteHeader(http.StatusInternalServerError)
+	if _, lErr := fmt.Fprintf(w, "Error: << %s >>. Please refer to this code for developer fast support: (%s).", pErr.Error(), pErrCode); lErr != nil {
 		pLog.Err(lErr)
 	}
 }

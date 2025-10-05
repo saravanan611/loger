@@ -8,13 +8,14 @@ import (
 	"time"
 )
 
-func AutoRestart(lRestartTime, lRestartMinute int) {
+/* restart the program on every day mention time to cleare the in-memory/catch-memory for good pratice and free the resource */
+func AutoRestart(lRestartHour, lRestartMinute int) {
 
 	go func() {
 
 		lCurrentTime := time.Now()
-		if !(lCurrentTime.Hour() == lRestartTime && lCurrentTime.Minute() == lRestartMinute) {
-			lNextExecutionTime := time.Date(lCurrentTime.Year(), lCurrentTime.Month(), lCurrentTime.Day(), lRestartTime, lRestartMinute, 0, 0, lCurrentTime.Location())
+		if !(lCurrentTime.Hour() == lRestartHour && lCurrentTime.Minute() == lRestartMinute) {
+			lNextExecutionTime := time.Date(lCurrentTime.Year(), lCurrentTime.Month(), lCurrentTime.Day(), lRestartHour, lRestartMinute, 0, 0, lCurrentTime.Location())
 			if lNextExecutionTime.Before(lCurrentTime) {
 				lNextExecutionTime = lNextExecutionTime.Add(time.Duration(24 * time.Hour))
 			}
@@ -50,4 +51,25 @@ func restart() (lErr error) {
 		return lErr
 	}
 	return
+}
+
+/* this function treager in end of the program  like close glogal db connection
+use defer to call this in func main() , this func is also auto treager your code where your program will panic
+*/
+
+func TreagerOnEnd(pEndFunc ...func()) {
+
+	for lIdx, lFunc := range pEndFunc {
+		log.Printf("going to execuate the end process %d \n", lIdx)
+		lFunc()
+	}
+
+	if lErr := recover(); lErr != nil {
+		log.Println("Caught panic:", lErr)
+	}
+
+	if lErr := restart(); lErr != nil {
+		log.Println("Error restarting program:", lErr)
+	}
+
 }
